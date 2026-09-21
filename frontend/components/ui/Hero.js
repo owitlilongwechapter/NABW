@@ -7,7 +7,7 @@ export default function Hero({ title, subtitle, ctaText, ctaLink, bgImage, heigh
       style={{
         backgroundImage: bgImage
           ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${bgImage}')`
-          : 'linear-gradient(135deg, #0c4a6e 0%, #0369a1 50%, #0ea5e9 100%)',
+          : 'linear-gradient(135deg, #45112b 0%, #9c2b61 52%, #f8b218 150%)',
       }}
     >
       <div className="container-custom relative z-10">

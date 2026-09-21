@@ -75,7 +75,7 @@ export default function ProjectDetail() {
         <section className="section-padding">
           <div className="container-custom text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Project Not Found</h2>
-            <p className="text-gray-600 mb-8">The project you're looking for doesn't exist or has been removed.</p>
+            <p className="text-gray-600 mb-8">The project you&apos;re looking for doesn&apos;t exist or has been removed.</p>
             <Link href="/projects" className="btn-primary">
               View All Projects
             </Link>

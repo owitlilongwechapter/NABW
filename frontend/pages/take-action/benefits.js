@@ -46,11 +46,7 @@ const benefits = [
 ];
 
 const membershipCategories = [
-  { value: 'individual', label: 'Individual Membership', price: 'From $50/year' },
-  { value: 'organization', label: 'Organization Membership', price: 'From $200/year' },
-  { value: 'student', label: 'Student Membership', price: 'From $25/year' },
-  { value: 'corporate', label: 'Corporate Membership', price: 'From $500/year' },
-  { value: 'lifetime', label: 'Lifetime Membership', price: 'One-time: $500' },
+  { value: 'individual', label: 'Individual Membership', price: 'MWK 50,000/Year' },
 ];
 
 export default function Benefits() {
@@ -59,7 +55,7 @@ export default function Benefits() {
       <Hero
         title="Benefits of Membership"
         subtitle="Discover the value and opportunities that come with being part of NABW."
-        bgImage="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+        bgImage="/images/MUSME5.jpg"
         height="h-[50vh]"
       />
 
@@ -102,12 +98,12 @@ export default function Benefits() {
                   <p className="text-gray-600 text-sm mb-6">
                     Join our community and unlock exclusive benefits tailored to your needs.
                   </p>
-                  <Link
-                    href="/take-action/become-member"
+                  <a
+                    href="https://forms.gle/Ddy1vJcfHQa3ngzb7"
                     className="btn-primary w-full text-sm"
                   >
                     Apply Now
-                  </Link>
+                  </a>
                 </div>
               ))}
             </div>
@@ -120,11 +116,11 @@ export default function Benefits() {
                 <FiHeart className="w-8 h-8 text-white" />
               </div>
               <blockquote className="text-xl italic mb-6">
-                "NABW has transformed my business and my life. The connections, mentorship, and resources
-                I've gained are invaluable. I'm not just a member; I'm part of a movement."
+                &ldquo;NABW has transformed my business and my life. The connections, mentorship, and resources
+                I&apos;ve gained are invaluable. I&apos;m not just a member; I&apos;m part of a movement.&rdquo;
               </blockquote>
               <cite className="text-lg font-medium">
-                — Sarah Johnson, CEO of TechStart Solutions
+                — Maryrose Ikumi
               </cite>
             </div>
           </div>

@@ -300,6 +300,12 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_SITE_NAME=NABW - National Association of Business Women
 ```
 
+For a production deployment, do not use `localhost:5000` as a browser-facing
+API URL. Either set `NEXT_PUBLIC_API_URL` to the public HTTPS address of the
+API, or leave it unset and set `BACKEND_INTERNAL_URL` while building the
+frontend. The latter uses the Next.js `/api` proxy so visitors always connect
+to the deployed backend rather than their own computer.
+
 ## API Endpoints
 
 ### Projects

@@ -44,7 +44,7 @@ export default function TestimonialCard({ testimonial }) {
       )}
 
       <p className="text-gray-700 text-sm italic mb-4 flex-1">
-        "{testimonial.content}"
+        &ldquo;{testimonial.content}&rdquo;
       </p>
     </div>
   );
