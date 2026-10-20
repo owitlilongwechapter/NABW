@@ -1,69 +1,64 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { FiChevronDown, FiChevronLeft, FiChevronRight, FiGlobe, FiHeart, FiBriefcase } from 'react-icons/fi';
 import Image from 'next/image';
-import { FiAward, FiGlobe, FiHeart, FiBriefcase, FiMaximize2, FiX } from 'react-icons/fi';
+import Link from 'next/link';
 import Hero from '../components/ui/Hero';
 import { aboutAPI, partnersAPI } from '../lib/api';
-import nabwMap from '../styles/nabw map.png';
+import picture1 from '../styles/pictures/Picture1.png';
+import picture2 from '../styles/pictures/Picture2.png';
+import picture3 from '../styles/pictures/Picture3.png';
+import picture4 from '../styles/pictures/Picture4.png';
+import picture5 from '../styles/pictures/Picture5.jpg';
+import picture6 from '../styles/pictures/Picture6.png';
+import picture7 from '../styles/pictures/Picture7.png';
 
-const heroImage = '/images/MUSME5.jpg';
-
-function ImpactMetric({ label, value }) {
-  return (
-    <div className="py-1.5">
-      <div className="mb-2 flex items-center justify-between gap-3 text-xs font-semibold">
-        <span className="leading-tight text-gray-700">{label}</span>
-        <span className="shrink-0 rounded-full bg-primary-700 px-2 py-0.5 text-white">{value}%</span>
-      </div>
-      <div
-        className="h-2 overflow-hidden rounded-full bg-primary-100"
-        role="progressbar"
-        aria-label={label}
-        aria-valuemin="0"
-        aria-valuemax="100"
-        aria-valuenow={value}
-      >
-        <div className="h-full rounded-full bg-primary-700" style={{ width: `${value}%` }} />
-      </div>
-    </div>
-  );
-}
-
-function ImpactHighlight({ label, value }) {
-  const radius = 34;
-  const circumference = 2 * Math.PI * radius;
-  const dashOffset = circumference - (value / 100) * circumference;
-
-  return (
-    <div className="flex shrink-0 flex-col items-center" aria-label={`${label}: ${value}%`}>
-      <div className="relative h-24 w-24">
-        <svg className="h-full w-full -rotate-90" viewBox="0 0 80 80" aria-hidden="true">
-          <circle cx="40" cy="40" r={radius} fill="none" stroke="#f6e0ea" strokeWidth="6" />
-          <circle
-            cx="40"
-            cy="40"
-            r={radius}
-            fill="none"
-            stroke="#7d204d"
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={dashOffset}
-          />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-primary-800">{value}%</span>
-      </div>
-      <span className="mt-1 max-w-28 text-center text-[11px] font-semibold leading-tight text-primary-800">{label}</span>
-    </div>
-  );
-}
+const homepagePhotos = [picture1, picture2, picture3, picture4, picture5, picture6, picture7].map((image) => image.src);
+const teamMembers = [
+  { name: 'Ms Barbara Banda', role: 'President' },
+  { name: 'Mr Jack Banda', role: 'Project Coordinator' },
+  { name: 'Maryrose Ikumi', role: 'Monitoring and Evaluation Expert' },
+  { name: 'Packston Chalema', role: 'Accountant' },
+];
+const projectSnapshots = [
+  {
+    title: 'Gender-Inclusive Public Procurement',
+    description: 'Building women-led businesses’ access to government contracts through training, policy advocacy and open contracting.',
+    image: picture6,
+  },
+  {
+    title: 'Building Back Better',
+    description: 'Supporting women-owned businesses to recover and strengthen resilience after climate-related shocks.',
+    image: picture7,
+  },
+  {
+    title: 'Green & Inclusive Energy',
+    description: 'Advancing women’s participation in greener, more inclusive energy systems and supply chains.',
+    image: picture4,
+  },
+  {
+    title: 'Gender Equality Advocacy',
+    description: 'Bringing women’s priorities into public dialogue, policy and decision-making.',
+    image: picture3,
+  },
+];
+const partnerCategories = [
+  {
+    title: 'Government Organisations',
+    matches: ['line ministries', 'malawi bureau', 'national economic empowerment fund', 'fines project', 'smedi'],
+  },
+  {
+    title: 'Donors and Development Partners',
+    matches: ['urgent africa fund', 'christian aid', 'world university service', 'wusc', 'hivos', 'graca', 'british council', 'giz'],
+  },
+  { title: 'Local Institutions', matches: [] },
+];
 
 export default function Home() {
   const [about, setAbout] = useState(null);
   const [partners, setPartners] = useState([]);
-  const [isMapOpen, setIsMapOpen] = useState(false);
-  const mapTriggerRef = useRef(null);
-  const mapDialogRef = useRef(null);
-  const mapCloseButtonRef = useRef(null);
+  const [activeTeamIndex, setActiveTeamIndex] = useState(0);
+  const [isTeamPaused, setIsTeamPaused] = useState(false);
+  const [openPartnerCategory, setOpenPartnerCategory] = useState(null);
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -84,58 +79,37 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!isMapOpen) return undefined;
+    if (isTeamPaused) return undefined;
 
-    const dialog = mapDialogRef.current;
-    const trigger = mapTriggerRef.current;
-    const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const interval = setInterval(() => {
+      setActiveTeamIndex((currentIndex) => (currentIndex + 1) % teamMembers.length);
+    }, 5000);
 
-    mapCloseButtonRef.current?.focus();
+    return () => clearInterval(interval);
+  }, [isTeamPaused]);
 
-    const handleDialogKeyDown = (event) => {
-      if (event.key === 'Escape') setIsMapOpen(false);
+  const showTeamMember = (index) => {
+    setActiveTeamIndex((index + teamMembers.length) % teamMembers.length);
+  };
 
-      if (event.key !== 'Tab' || !dialog) return;
+  const groupedPartners = partnerCategories.map((category, categoryIndex) => ({
+    ...category,
+    partners: partners.filter((partner) => {
+      const name = partner.name.toLowerCase();
+      const earlierCategoryMatches = partnerCategories
+        .slice(0, categoryIndex)
+        .some((earlierCategory) => earlierCategory.matches.some((match) => name.includes(match)));
 
-      const focusableElements = Array.from(dialog.querySelectorAll(focusableSelector));
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (!firstElement || !lastElement) {
-        event.preventDefault();
-      } else if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
+      if (earlierCategoryMatches) return false;
+      if (category.matches.length === 0) {
+        return !partnerCategories
+          .slice(0, categoryIndex)
+          .some((earlierCategory) => earlierCategory.matches.some((match) => name.includes(match)));
       }
-    };
 
-    document.addEventListener('keydown', handleDialogKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleDialogKeyDown);
-      trigger?.focus();
-    };
-  }, [isMapOpen]);
-
-  const thematicAreas = [
-    {
-      title: 'Economic Empowerment',
-      intro: 'Promoting enterprise growth, financial resilience and market access for women entrepreneurs.',
-      programmes: ['Business Mentorship Programme', 'Financial Literacy Workshops', 'Microfinance Initiative'],
-    },
-    {
-      title: 'Social Advocacy',
-      intro: 'Promoting leadership, rights and accountability for women in business and their communities.',
-      programmes: ['Women\'s Leadership Trainings', 'Advocacy Campaigns', 'Community Outreach'],
-    },
-    {
-      title: 'Climate Action & Renewable Energy',
-      intro: 'Advancing women\'s participation in green enterprise, climate resilience and inclusive energy systems.',
-      programmes: ['Green Business Initiative', 'Climate Education Programs', 'Green & Inclusive Energy Advocacy'],
-    },
-  ];
+      return category.matches.some((match) => name.includes(match));
+    }),
+  }));
 
   const values = about?.coreValues || [];
 
@@ -146,7 +120,7 @@ export default function Home() {
         subtitle={about?.mission || 'A women-founded and women-led non-profit organisation dedicated to empowering women in business and leadership roles in Malawi.'}
         ctaText="Learn About NABW"
         ctaLink="/about"
-        bgImage={heroImage}
+        bgImages={homepagePhotos}
         height="h-[80vh]"
       />
 
@@ -158,11 +132,11 @@ export default function Home() {
               {about?.organizationName || 'National Association of Business Women (NABW)'}
             </h2>
             <p className="text-gray-700 max-w-4xl mx-auto leading-relaxed">
-              {about?.history || 'NABW is a women-founded and women-led non-profit and non-governmental organisation dedicated to empowering women in business and leadership roles. Founded in 1990 as an NGO under the Trusteeship Act of 1962 of the Laws of Malawi, NABW works across three key thematic areas: Economic Empowerment, Social Advocacy, and Climate Action & Renewable Energy.'}
+              {about?.history || 'NABW is a women-founded and women-led non-profit and non-governmental organisation dedicated to empowering women in business and leadership roles. Founded in 1990 as an NGO under the Trusteeship Act of 1962 of the Laws of Malawi, NABW works to advance women’s economic and social transformation.'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4">
                 <FiHeart className="w-8 h-8 text-primary-600" />
@@ -179,15 +153,6 @@ export default function Home() {
               <p className="text-gray-700 leading-relaxed">{about?.vision || 'Vision information is currently being updated.'}</p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4">
-                <FiAward className="w-8 h-8 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Thematic Focus</h3>
-              <p className="text-gray-700 leading-relaxed">
-                NABW advances women&apos;s economic inclusion, social accountability and climate resilience through practical programmes, advocacy and partnerships.
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -214,157 +179,111 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-padding bg-gray-50">
+      <section className="section-padding">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <p className="text-primary-700 font-semibold uppercase tracking-[0.2em] text-xs mb-3">Focus Areas</p>
-            <h2 className="text-3xl font-bold text-gray-900">Thematic Areas</h2>
+          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary-700">On the ground</p>
+              <h2 className="text-3xl font-bold text-gray-900">Project snapshots</h2>
+            </div>
+            <Link href="/projects" className="text-sm font-semibold text-primary-700 hover:text-primary-900">
+              Explore projects <span aria-hidden="true">&rarr;</span>
+            </Link>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {thematicAreas.map((area) => (
-              <div key={area.title} className="bg-white rounded-xl shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{area.title}</h3>
-                <p className="text-gray-700 mb-5 leading-relaxed">{area.intro}</p>
-                <ul className="space-y-2">
-                  {area.programmes.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-gray-700">
-                      <span className="mt-1 h-2 w-2 rounded-full bg-primary-600" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {projectSnapshots.map((project) => (
+              <Link key={project.title} href="/projects" className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 focus-visible:ring-offset-4">
+                <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-lg bg-gray-100">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary-700">{project.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600">{project.description}</p>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section-padding">
+      <section className="section-padding bg-gray-50">
         <div className="container-custom">
           <div className="text-center mb-10">
-            <p className="text-primary-700 font-semibold uppercase tracking-[0.2em] text-xs mb-3">Impact</p>
-            <h2 className="text-3xl font-bold text-gray-900">Our Recent Work & Achievements</h2>
+            <p className="text-primary-700 font-semibold uppercase tracking-[0.2em] text-xs mb-3">People</p>
+            <h2 className="text-3xl font-bold text-gray-900">Our Team</h2>
           </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.65fr)_minmax(300px,0.85fr)] lg:items-start lg:gap-8">
-            <div className="space-y-6">
-              <article className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex gap-5">
-                  <ImpactHighlight label="Women trained" value={85} />
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Entrepreneurial Behaviour, Life Skills and Leadership</h3>
-                    <p className="text-gray-700 leading-relaxed">77 of 90 targeted women were trained, representing 85%. Participants reported improved self-confidence and decision-making abilities, and at least 80% took leadership roles within their communities or business networks.</p>
-                  </div>
-                </div>
-                <div className="mt-4 border-t border-gray-100 pt-2">
-                  <ImpactMetric label="Taking leadership roles" value={80} />
-                </div>
-              </article>
-              <article className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex gap-5">
-                  <ImpactHighlight label="Knowledge increase" value={85} />
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Financial Literacy, Management and Record Keeping</h3>
-                    <p className="text-gray-700 leading-relaxed">77 of 90 women were trained, representing 85%. Participants demonstrated an average 85% increase in financial literacy knowledge, 80% reported implementing changes in their businesses, and 90% now have organised financial records compared with less than 50% at the start of the project.</p>
-                  </div>
-                </div>
-                <div className="mt-4 grid gap-x-6 border-t border-gray-100 pt-2 sm:grid-cols-2">
-                  <ImpactMetric label="Women trained" value={85} />
-                  <ImpactMetric label="Business changes implemented" value={80} />
-                  <ImpactMetric label="Organised financial records" value={90} />
-                </div>
-              </article>
-              <article className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex gap-5">
-                  <ImpactHighlight label="Products improved" value={70} />
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Product Development and Quality Control</h3>
-                    <p className="text-gray-700 leading-relaxed">64 women entrepreneurs were trained against a target of 60. Quality improvements enhanced the competitiveness of women-led businesses, and 70% of participants successfully developed or improved existing products.</p>
-                  </div>
-                </div>
-              </article>
-              <article className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex gap-5">
-                  <ImpactHighlight label="Mentors trained" value={93} />
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Mentorship Programme</h3>
-                    <p className="text-gray-700 leading-relaxed">28 of 30 targeted mentors were trained, representing 93%. Each mentor was assigned at least three mentees, and the programme assisted in business formalisation and improved the credibility of women-owned businesses.</p>
-                  </div>
-                </div>
-              </article>
+          <div
+            className="mx-auto max-w-xl"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="NABW team members"
+            onMouseEnter={() => setIsTeamPaused(true)}
+            onMouseLeave={() => setIsTeamPaused(false)}
+            onFocus={() => setIsTeamPaused(true)}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setIsTeamPaused(false);
+            }}
+          >
+            <div className="overflow-hidden rounded-xl">
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${activeTeamIndex * 100}%)` }}
+              >
+                {teamMembers.map((person, index) => (
+                  <article
+                    key={person.name}
+                    className="min-w-full rounded-xl bg-white p-8 text-center shadow-lg"
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={`${index + 1} of ${teamMembers.length}`}
+                    aria-hidden={index !== activeTeamIndex}
+                  >
+                    <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary-100 text-xl font-bold text-primary-700">
+                      {person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">{person.name}</h3>
+                    <p className="mt-2 text-sm font-semibold text-primary-700">{person.role}</p>
+                  </article>
+                ))}
+              </div>
             </div>
-
-            <aside className="bg-white rounded-xl shadow-lg p-6 sm:p-8 lg:sticky lg:top-6" aria-labelledby="reach-heading">
-              <p className="text-primary-700 font-semibold uppercase tracking-[0.2em] text-xs mb-3">Nationwide network</p>
-              <h3 id="reach-heading" className="text-2xl font-bold text-gray-900">Where We Reach</h3>
-              <p className="mt-3 text-gray-700 leading-relaxed">NABW supports women business owners across Malawi, connecting members and communities in the Southern, Central and Northern regions.</p>
+            <div className="mt-5 flex items-center justify-center gap-5">
               <button
                 type="button"
-                ref={mapTriggerRef}
-                className="group relative mt-6 aspect-[4/3] w-full overflow-hidden rounded-lg bg-primary-50 text-left outline-none ring-offset-2 transition focus-visible:ring-2 focus-visible:ring-primary-700"
-                onClick={() => setIsMapOpen(true)}
-                aria-label="Expand NABW reach map"
-                aria-haspopup="dialog"
+                onClick={() => showTeamMember(activeTeamIndex - 1)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-700 transition hover:border-primary-600 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700"
+                aria-label="Previous team member"
               >
-                <Image
-                  src={nabwMap}
-                  alt="Map showing NABW's reach across Malawi"
-                  fill
-                  sizes="(min-width: 1280px) 29vw, (min-width: 640px) 70vw, 92vw"
-                  className="object-contain p-3 transition duration-300 group-hover:scale-[1.03]"
-                />
-                <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md bg-primary-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition group-hover:bg-primary-700">
-                  <FiMaximize2 aria-hidden="true" className="h-3.5 w-3.5" />
-                  View full map
-                </span>
+                <FiChevronLeft aria-hidden="true" className="h-5 w-5" />
               </button>
-              <dl className="mt-6 space-y-3 border-t border-gray-100 pt-5 text-sm">
-                <div><div className="mb-1.5 flex items-center justify-between gap-4"><dt className="flex items-center gap-2 font-medium text-gray-700"><span className="h-2.5 w-2.5 rounded-full bg-primary-700" />Southern Region</dt><dd className="font-bold text-primary-800">40%</dd></div><div className="h-1.5 overflow-hidden rounded-full bg-primary-100"><div className="h-full w-2/5 rounded-full bg-primary-700" /></div></div>
-                <div><div className="mb-1.5 flex items-center justify-between gap-4"><dt className="flex items-center gap-2 font-medium text-gray-700"><span className="h-2.5 w-2.5 rounded-full bg-primary-500" />Central Region</dt><dd className="font-bold text-primary-800">35%</dd></div><div className="h-1.5 overflow-hidden rounded-full bg-primary-100"><div className="h-full rounded-full bg-primary-500" style={{ width: '35%' }} /></div></div>
-                <div><div className="mb-1.5 flex items-center justify-between gap-4"><dt className="flex items-center gap-2 font-medium text-gray-700"><span className="h-2.5 w-2.5 rounded-full bg-secondary-500" />Northern Region</dt><dd className="font-bold text-primary-800">25%</dd></div><div className="h-1.5 overflow-hidden rounded-full bg-primary-100"><div className="h-full w-1/4 rounded-full bg-secondary-500" /></div></div>
-              </dl>
-            </aside>
+              <div className="flex items-center gap-2" role="group" aria-label="Choose team member">
+                {teamMembers.map((person, index) => (
+                  <button
+                    key={person.name}
+                    type="button"
+                    onClick={() => showTeamMember(index)}
+                    className={`h-2.5 w-2.5 rounded-full transition ${index === activeTeamIndex ? 'bg-primary-700' : 'bg-gray-300 hover:bg-gray-500'}`}
+                    aria-label={`Show ${person.name}`}
+                    aria-current={index === activeTeamIndex ? 'true' : undefined}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => showTeamMember(activeTeamIndex + 1)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-700 transition hover:border-primary-600 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700"
+                aria-label="Next team member"
+              >
+                <FiChevronRight aria-hidden="true" className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
-
-      {isMapOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 sm:p-8"
-          role="presentation"
-          onMouseDown={() => setIsMapOpen(false)}
-        >
-          <div
-            ref={mapDialogRef}
-            className="relative flex max-h-full w-full max-w-6xl flex-col rounded-xl bg-white p-4 shadow-2xl sm:p-6"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="map-modal-title"
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <div className="mb-3 flex items-center justify-between gap-4">
-              <h2 id="map-modal-title" className="text-lg font-bold text-gray-900">NABW reach across Malawi</h2>
-              <button
-                type="button"
-                ref={mapCloseButtonRef}
-                onClick={() => setIsMapOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-700 transition hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 focus-visible:ring-offset-2"
-                aria-label="Close map"
-              >
-                <FiX aria-hidden="true" className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="relative min-h-0 flex-1 overflow-auto bg-primary-50">
-              <Image
-                src={nabwMap}
-                alt="Map showing NABW's reach across Malawi"
-                sizes="(min-width: 1280px) 1100px, 100vw"
-                className="h-auto w-full object-contain"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
       <section className="section-padding bg-gray-50">
         <div className="container-custom">
@@ -372,13 +291,35 @@ export default function Home() {
             <p className="text-primary-700 font-semibold uppercase tracking-[0.2em] text-xs mb-3">Partners</p>
             <h2 className="text-3xl font-bold text-gray-900">Partners & Collaborators</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {partners.length > 0 ? partners.map((partner) => (
-              <div key={partner._id || partner.name} className="bg-white rounded-lg border border-gray-200 p-4 text-sm text-gray-700 shadow-sm">{partner.name}</div>
-            )) : (
-              <div className="col-span-full text-center text-gray-600 py-8">Partner information is being updated.</div>
-            )}
-          </div>
+          {partners.length > 0 ? (
+            <div className="mx-auto max-w-4xl space-y-3">
+              {groupedPartners.map((category) => category.partners.length > 0 && (
+                <div key={category.title} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                  <h3>
+                    <button
+                      type="button"
+                      onClick={() => setOpenPartnerCategory((current) => current === category.title ? null : category.title)}
+                      className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-gray-900 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-700"
+                      aria-expanded={openPartnerCategory === category.title}
+                      aria-controls={`partners-${category.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                    >
+                      <span>{category.title}</span>
+                      <FiChevronDown aria-hidden="true" className={`h-5 w-5 shrink-0 text-primary-700 transition-transform ${openPartnerCategory === category.title ? 'rotate-180' : ''}`} />
+                    </button>
+                  </h3>
+                  {openPartnerCategory === category.title && (
+                    <div id={`partners-${category.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="grid grid-cols-1 gap-3 border-t border-gray-100 bg-gray-50 p-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {category.partners.map((partner) => (
+                        <div key={partner._id || partner.name} className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700">{partner.name}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-600 py-8">Partner information is being updated.</div>
+          )}
         </div>
       </section>
 

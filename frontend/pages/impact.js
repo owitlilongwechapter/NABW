@@ -1,85 +1,87 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Hero from '../components/ui/Hero';
-import { impactStatsAPI, partnersAPI } from '../lib/api';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { partnersAPI } from '../lib/api';
+import { FiChevronDown } from 'react-icons/fi';
+import picture1 from '../styles/pictures/Picture1.png';
+import picture2 from '../styles/pictures/Picture2.png';
+import picture6 from '../styles/pictures/Picture6.png';
+
+const partnerCategories = [
+  {
+    title: 'Government Organisations',
+    matches: ['line ministries', 'malawi bureau', 'national economic empowerment fund', 'fines project', 'smedi'],
+  },
+  {
+    title: 'Donors and Development Partners',
+    matches: ['urgent africa fund', 'christian aid', 'world university service', 'wusc', 'hivos', 'graca', 'british council', 'giz'],
+  },
+  { title: 'Local Institutions', matches: [] },
+];
 
 export default function Impact() {
-  const [stats, setStats] = useState([]);
   const [partners, setPartners] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [openPartnerCategory, setOpenPartnerCategory] = useState(null);
+  const [openImpactCard, setOpenImpactCard] = useState(null);
 
   useEffect(() => {
     const fetchImpactData = async () => {
       try {
-        const [statsRes, partnersRes] = await Promise.all([
-          impactStatsAPI.getAll().catch(() => ({ data: { data: [] } })),
-          partnersAPI.getAll().catch(() => ({ data: { data: [] } })),
-        ]);
-
-        setStats(statsRes.data.data || []);
+        const partnersRes = await partnersAPI.getAll().catch(() => ({ data: { data: [] } }));
         setPartners(partnersRes.data.data || []);
       } catch (error) {
         console.error('Failed to load impact data:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchImpactData();
   }, []);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % achievements.length);
-  };
+  const groupedPartners = partnerCategories.map((category, categoryIndex) => ({
+    ...category,
+    partners: partners.filter((partner) => {
+      const name = (partner.name || '').toLowerCase();
+      const earlierCategoryMatches = partnerCategories
+        .slice(0, categoryIndex)
+        .some((earlierCategory) => earlierCategory.matches.some((match) => name.includes(match)));
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + achievements.length) % achievements.length);
-  };
+      if (earlierCategoryMatches) return false;
+      if (category.matches.length === 0) return true;
+      return category.matches.some((match) => name.includes(match));
+    }),
+  }));
 
-  const achievements = [
+  const impactAreas = [
     {
-      title: 'Entrepreneurial Behaviour, Life Skills and Leadership',
-      detail: '77 of 90 targeted women were trained, representing 85%, with improved self-confidence and decision-making abilities and at least 80% of participants taking leadership roles within their communities or business networks.',
+      title: 'Businesses Supported', image: picture1, imageAlt: 'Women-led businesses showcasing their products',
+      highlights: [
+        { title: 'Financial skills', detail: '77 of 90 targeted women completed financial literacy training. Participants reported an average 85% increase in financial knowledge; 80% implemented business changes, and 90% organised their financial records.' },
+        { title: 'Product improvement', detail: '64 women entrepreneurs took part in product development and quality-control training against a target of 60. 70% developed or improved a product.' },
+        { title: 'Mentorship', detail: '28 of 30 targeted mentors were trained, and each was assigned at least three mentees to support business formalisation and growth.' },
+      ],
     },
     {
-      title: 'Financial Literacy, Management and Record Keeping',
-      detail: '77 of 90 women were trained, representing 85%. Participants demonstrated an average 85% increase in financial literacy knowledge, 80% reported implementing changes in their businesses, and 90% now have organised financial records compared with less than 50% at the start of the project.',
+      title: 'Training and Capacity Building', image: picture6, imageAlt: 'Women entrepreneurs taking part in a learning session',
+      highlights: [
+        { title: 'Leadership and life skills', detail: '77 of 90 targeted women completed training. At least 80% went on to take leadership roles in their communities or business networks.' },
+        { title: 'Digital marketing', detail: '90 women completed e-commerce and digital-marketing training; 70% established or improved their online presence.' },
+        { title: 'Practical business skills', detail: 'Training covered financial literacy, management and record keeping, product development, quality control, entrepreneurial behaviour and leadership.' },
+      ],
     },
     {
-      title: 'Product Development and Quality Control',
-      detail: '64 women entrepreneurs were trained against a target of 60, quality improvements enhanced the competitiveness of women-led businesses, and 70% of participants successfully developed or improved existing products.',
-    },
-    {
-      title: 'Mentorship Programme',
-      detail: '28 of 30 targeted mentors were trained, representing 93%. Each mentor was assigned at least three mentees, and the programme assisted in business formalisation and improved the credibility of women-owned businesses.',
+      title: 'Market Access and Trade Opportunities', image: picture2, imageAlt: 'Women entrepreneurs at a NABW enterprise exhibition',
+      highlights: [
+        { title: 'Public procurement advocacy', detail: 'NABW’s policy advocacy has brought stakeholders together to address barriers facing women-owned SMEs and promote gender-responsive public procurement.' },
+        { title: 'Online market presence', detail: 'E-commerce and digital-marketing training helped women-owned businesses build or improve their online presence, creating additional ways to reach customers.' },
+        { title: 'Business connections', detail: 'NABW connects women entrepreneurs through exhibitions, mentorship and business networks that help them showcase products and pursue new opportunities.' },
+      ],
     },
   ];
-
-  const initiatives = [
-    {
-      title: 'Building Back Better After Climate Related Events',
-      detail: 'Involved technical assistance from the Investment Climate Reform (ICR) Facility to support women-owned businesses to recover and build resilience after climate-related events and other external shocks.',
-    },
-    {
-      title: 'Promoting Insurance Coverage among Women-owned Businesses',
-      detail: 'Developed following Cyclone Freddy to help women-owned SMEs mitigate climate-related risks through insurance and awareness campaigns in the affected districts.',
-    },
-    {
-      title: 'SheActs4Feminomics',
-      detail: 'A six-month project implemented by NABW in 2022 focused on macro-level policies affecting women’s economic justice and rights.',
-    },
-    {
-      title: 'Green & Inclusive Energy (GIE)',
-      detail: 'Supported by Hivos from 2016–2020, GIE focused on reducing energy poverty and increasing women’s participation in the energy supply chain.',
-    },
-  ];
-
   return (
     <>
       <Hero
         title="Our Impact"
-        subtitle="NABW’s programmes, advocacy and partnerships strengthen women’s economic resilience, leadership and climate action in Malawi."
+        subtitle="NABW's programmes, advocacy and partnerships strengthen women's economic resilience, leadership and climate action in Malawi."
         bgImage="/images/MUSME5.jpg"
         height="h-[50vh]"
       />
@@ -88,93 +90,79 @@ export default function Impact() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <p className="text-primary-700 uppercase tracking-[0.2em] text-xs font-semibold mb-3">Impact</p>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Measurable outcomes from NABW’s work</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Measurable outcomes from NABW's work</h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
-              NABW’s work is grounded in evidence-based programming and advocacy for women-led businesses, leadership development and climate resilience across Malawi.
+              NABW's work is grounded in evidence-based programming and advocacy for women-led businesses, leadership development and climate resilience across Malawi.
             </p>
           </div>
 
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {[...Array(3)].map((_, index) => (
-                <div key={index} className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-              ))}
-            </div>
-          ) : stats.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {stats.map((stat) => (
-                <div key={stat._id || stat.title} className="bg-white rounded-xl shadow-lg p-8 text-center">
-                  <div className="text-4xl font-bold text-primary-700 mb-2">{stat.value}</div>
-                  <div className="text-xl font-semibold text-gray-900 mb-2">{stat.title}</div>
-                  <p className="text-gray-700">{stat.description}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="mb-16 text-center text-gray-600">Impact statistics are being updated.</div>
-          )}
-
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Our Recent Work & Achievements</h2>
-            <div className="relative">
-              {/* Carousel Container */}
-              <div className="overflow-hidden">
-                <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-                  {achievements.map((achievement, index) => (
-                    <div key={index} className="min-w-full px-4">
-                      <div className="bg-white rounded-xl shadow-lg p-8">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">{achievement.title}</h3>
-                        <p className="text-gray-700 leading-relaxed">{achievement.detail}</p>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {impactAreas.map((area) => {
+                const isOpen = openImpactCard === area.title;
+                const panelId = `impact-area-${area.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+                return (
+                  <article key={area.title} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+                    <button type="button" onClick={() => setOpenImpactCard((current) => current === area.title ? null : area.title)} className="flex min-h-24 w-full items-center justify-between gap-4 p-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-700" aria-expanded={isOpen} aria-controls={panelId}>
+                      <span className="text-xl font-bold text-gray-900">{area.title}</span>
+                      <FiChevronDown aria-hidden="true" className={`h-5 w-5 shrink-0 text-primary-700 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isOpen && (
+                      <div id={panelId} className="border-t border-gray-100">
+                        <div className="relative aspect-[4/3] w-full bg-primary-50">
+                          <Image src={area.image} alt={area.imageAlt} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-cover" />
+                        </div>
+                        <div className="space-y-5 p-6">
+                          {area.highlights.map((highlight) => (
+                            <div key={highlight.title}>
+                              <h3 className="font-semibold text-primary-800">{highlight.title}</h3>
+                              <p className="mt-1 text-sm leading-relaxed text-gray-700">{highlight.detail}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all z-10"
-                aria-label="Previous slide"
-              >
-                <FiChevronLeft className="w-6 h-6 text-gray-900" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all z-10"
-                aria-label="Next slide"
-              >
-                <FiChevronRight className="w-6 h-6 text-gray-900" />
-              </button>
-
-              {/* Dots Indicator */}
-              <div className="flex justify-center gap-2 mt-6">
-                {achievements.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all ${
-                      index === currentSlide ? 'bg-primary-600 w-8' : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
+                    )}
+                  </article>
+                );
+              })}
             </div>
           </div>
-
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Partners & Collaborators</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {partners.length > 0 ? partners.map((partner) => (
-                <div key={partner._id || partner.name} className="bg-white rounded-lg border border-gray-200 p-4 text-sm text-gray-700 shadow-sm">{partner.name}</div>
-              )) : (
-                <div className="col-span-full text-center text-gray-600 py-8">Partner information is being updated.</div>
-              )}
-            </div>
+            {partners.length > 0 ? (
+              <div className="mx-auto max-w-4xl space-y-3">
+                {groupedPartners.map((category) => category.partners.length > 0 && (
+                  <div key={category.title} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <h3>
+                      <button
+                        type="button"
+                        onClick={() => setOpenPartnerCategory((current) => current === category.title ? null : category.title)}
+                        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-gray-900 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-700"
+                        aria-expanded={openPartnerCategory === category.title}
+                        aria-controls={`impact-partners-${category.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                      >
+                        <span>{category.title}</span>
+                        <FiChevronDown aria-hidden="true" className={`h-5 w-5 shrink-0 text-primary-700 transition-transform ${openPartnerCategory === category.title ? 'rotate-180' : ''}`} />
+                      </button>
+                    </h3>
+                    {openPartnerCategory === category.title && (
+                      <div id={`impact-partners-${category.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="grid grid-cols-1 gap-3 border-t border-gray-100 bg-gray-50 p-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {category.partners.map((partner) => (
+                          <div key={partner._id || partner.name} className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700">{partner.name}</div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-gray-600 py-8">Partner information is being updated.</div>
+            )}
           </div>
         </div>
       </section>
     </>
   );
 }
+

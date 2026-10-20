@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FiUsers, FiTrendingUp, FiBriefcase, FiAward, FiCalendar, FiBookOpen, FiGlobe, FiHeart } from 'react-icons/fi';
+import { FiUsers, FiTrendingUp, FiBriefcase, FiAward, FiBookOpen, FiGlobe, FiHeart } from 'react-icons/fi';
 import Hero from '../../components/ui/Hero';
 
 const benefits = [
@@ -32,16 +32,6 @@ const benefits = [
     icon: FiGlobe,
     title: 'Market Access',
     description: 'Expand your business reach through our partner network, trade missions, and business-to-business matchmaking opportunities.',
-  },
-  {
-    icon: FiHeart,
-    title: 'Community Impact',
-    description: 'Make a meaningful difference in your community through our corporate social responsibility initiatives and volunteer programs.',
-  },
-  {
-    icon: FiCalendar,
-    title: 'Resource Library',
-    description: 'Access a comprehensive library of business resources, research reports, templates, and best practices curated for women entrepreneurs.',
   },
 ];
 

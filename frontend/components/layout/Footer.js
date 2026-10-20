@@ -20,7 +20,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container-custom section-padding">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <div className="w-20 h-10 bg-primary-700 rounded-lg flex items-center justify-center">
@@ -52,15 +52,6 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-white font-bold text-lg">Thematic Areas</h3>
-            <ul className="space-y-2 text-sm">
-              <li className="hover:text-white transition-colors">Economic Empowerment</li>
-              <li className="hover:text-white transition-colors">Social Advocacy</li>
-              <li className="hover:text-white transition-colors">Climate Action & Renewable Energy</li>
-            </ul>
-          </div>
-
-          <div className="space-y-4">
             <h3 className="text-white font-bold text-lg">Contact</h3>
             <div className="space-y-3 text-sm">
               <div className="flex items-start space-x-3">
@@ -69,7 +60,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-3">
                 <FiPhone className="w-5 h-5 text-primary-500" />
-                <span>+265 995 752 813<br />+265 888285280</span>
+                <span>+265 995 752 813<br />+265 888 285 280</span>
               </div>
               <div className="flex items-center space-x-3">
                 <FiMail className="w-5 h-5 text-primary-500" />

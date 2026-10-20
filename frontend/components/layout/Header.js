@@ -2,20 +2,20 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
+import { FiMenu, FiX } from 'react-icons/fi';
 import logo from '../../styles/2NABW_Colour_LG_RGB.jpg';
 
 const navigation = [
-  { name: 'Home', href: '/', dropdown: [{ name: 'About Us', href: '/about' }, { name: 'Our Impact', href: '/impact' }] },
+  { name: 'Home', href: '/' },
+  { name: 'About NABW', href: '/about' },
   { name: 'Our Impact', href: '/impact' },
-  { name: 'Projects & Initiatives', href: '/projects', dropdown: [{ name: 'Building Back Better', href: '/projects' }, { name: 'SheActs4Feminomics', href: '/projects' }, { name: 'Green & Inclusive Energy', href: '/projects' }] },
+  { name: 'Projects & Initiatives', href: '/projects' },
+  { name: 'Membership', href: '/take-action/benefits' },
   { name: 'Contact', href: '/contact' },
-  { name: 'Take Action', href: '/take-action/benefits', dropdown: [{ name: 'Benefits of Membership', href: '/take-action/benefits' }, { name: 'Become a Member', href: '/take-action/become-member' }] },
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
 
@@ -30,10 +30,6 @@ export default function Header() {
   const isActive = (href) => {
     if (href === '/') return router.pathname === '/';
     return router.pathname.startsWith(href);
-  };
-
-  const closeDropdowns = () => {
-    setDropdownOpen(null);
   };
 
   return (
@@ -55,12 +51,7 @@ export default function Header() {
 
           <nav className="hidden lg:flex items-center space-x-1">
             {navigation.map((item) => (
-              <div
-                key={item.name}
-                className="relative"
-                onMouseEnter={() => setDropdownOpen(item.name)}
-                onMouseLeave={() => setDropdownOpen(null)}
-              >
+              <div key={item.name}>
                 <Link
                   href={item.href}
                   className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
@@ -70,27 +61,7 @@ export default function Header() {
                   }`}
                 >
                   {item.name}
-                  {item.dropdown && <FiChevronDown className="ml-1 w-4 h-4" />}
                 </Link>
-
-                {item.dropdown && dropdownOpen === item.name && (
-                  <div
-                    className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50"
-                    onMouseEnter={() => setDropdownOpen(item.name)}
-                    onMouseLeave={() => setDropdownOpen(null)}
-                  >
-                    {item.dropdown.map((subItem) => (
-                      <Link
-                        key={subItem.name || subItem.href}
-                        href={subItem.href}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors"
-                        onClick={closeDropdowns}
-                      >
-                        {subItem.name || subItem.href.replace('/projects', 'Projects')}
-                      </Link>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
           </nav>
@@ -128,20 +99,6 @@ export default function Header() {
               >
                 {item.name}
               </Link>
-              {item.dropdown && (
-                <div className="ml-4 mt-1 space-y-1">
-                  {item.dropdown.map((subItem) => (
-                    <Link
-                      key={subItem.name || subItem.href}
-                      href={subItem.href}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-primary-700 hover:bg-gray-50 transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {subItem.name || subItem.href.replace('/projects', 'Projects')}
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
           <Link href="/take-action/become-member" className="block mx-4 mt-4 btn-primary text-center text-sm" onClick={() => setMobileMenuOpen(false)}>

@@ -1,37 +1,91 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import Hero from '../../components/ui/Hero';
-import { projectsAPI } from '../../lib/api';
 import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
+import picture1 from '../../styles/pictures/Picture1.png';
+import picture2 from '../../styles/pictures/Picture2.png';
+import picture6 from '../../styles/pictures/Picture6.png';
+
+const currentProjectPhotos = [
+  { image: picture1, caption: 'Women-led businesses showcasing their products' },
+  { image: picture2, caption: 'NABW enterprise exhibition' },
+  { image: picture6, caption: 'Women entrepreneurs in a learning session' },
+];
+
+const currentProjectResults = [
+  { value: '7', label: 'Policy recommendations submitted' },
+  { value: '22', label: 'Policymakers engaged' },
+  { value: '56', label: 'Women entrepreneurs trained' },
+  { value: '4', label: 'Advocacy engagements' },
+  { value: '1', label: 'Policy brief developed' },
+  { value: '11', label: 'Campaign materials created' },
+  { value: '20', label: 'Women in mentorship' },
+  { value: '1', label: 'Stakeholder roundtable' },
+];
+
+const previousProjects = [
+  {
+    title: 'Policy Advocacy Project',
+    shortDescription: 'NABW’s SheActs4Feminomics and 2020 advocacy work brought stakeholders together to strengthen policy and regulatory frameworks affecting women-owned SMEs and economic justice.',
+    fullDescription: 'In 2022, NABW implemented the six-month SheActs4Feminomics project with financial support from Urgent Action Fund, working with civil-society partners including For Equality, CEWAG, MHRRC and Chikulamayembe Women Forum. The work focused on macro-level policies affecting women’s economic justice and rights, and on strengthening policy and regulatory frameworks to address challenges faced by women-owned SMEs. The profile also records a 2020 Financial Inclusion and Gender Responsive Procurement advocacy campaign attended by the State President and cabinet ministers.',
+    objectives: [
+      'Strengthen policy and regulatory frameworks addressing challenges faced by women-owned SMEs.',
+      'Advance women’s economic justice and rights through policy dialogue.',
+    ],
+    activities: [
+      'Workshop on gender mainstreaming in SME policies, strategies and programmes.',
+      'Policy dialogue on public procurement and business formalisation.',
+      'Plenary session on achieving economic justice for women-owned SMEs.',
+      'Financial Inclusion and Gender Responsive Procurement advocacy campaign.',
+    ],
+    beneficiaries: ['Women-owned SMEs', 'Women entrepreneurs', 'Civil-society and policy stakeholders'],
+    achievedResults: ['The 2020 campaign contributed to the development of a Financial Inclusion Index for monitoring financial institutions.'],
+    featuredImage: picture2.src,
+    gallery: [picture2.src],
+  },
+  {
+    title: 'Women’s Empowerment Project',
+    shortDescription: 'NABW’s training and mentorship programmes built women entrepreneurs’ leadership, financial, digital marketing and product-development skills.',
+    fullDescription: 'The NABW Profile 2024 documents a programme of practical training and mentorship for women entrepreneurs. Topics included entrepreneurial behaviour, life skills and leadership; financial literacy, management and record keeping; e-commerce and digital marketing; product development and quality control; and mentorship.',
+    activities: [
+      'Entrepreneurial behaviour, life skills and leadership training.',
+      'Financial literacy, business management and record-keeping training.',
+      'E-commerce and digital marketing training.',
+      'Product development and quality-control training.',
+      'Mentor training and matching mentors with mentees.',
+    ],
+    beneficiaries: ['Women entrepreneurs', 'Women-owned businesses', 'Business mentors and mentees'],
+    achievedResults: [
+      '77 of 90 targeted women (85%) completed leadership and life-skills training; at least 80% took leadership roles in their communities or business networks.',
+      '77 of 90 women (85%) completed financial-literacy training; participants reported an average 85% increase in knowledge, 80% implemented business changes, and 90% organised their financial records.',
+      '90 of 90 targeted women completed e-commerce and digital-marketing training; 70% established or improved their online presence.',
+      '64 women entrepreneurs were trained against a target of 60; 70% developed or improved a product.',
+      '28 of 30 targeted mentors (93%) were trained, with each assigned at least three mentees.',
+    ],
+    featuredImage: picture6.src,
+    gallery: [picture6.src],
+  },
+  {
+    title: 'Transparency and Accountability Project',
+    shortDescription: 'NABW and civil-society partners reviewed progress and remaining gaps 25 years after the Beijing Platform for Action was adopted.',
+    fullDescription: 'Under the Beijing Declaration Platform for Action +25 process in 2020, NABW and civil-society partners consulted on achievements and gaps since the platform’s adoption in 1995. Discussions considered emerging challenges for women and what more could be done, including access to quality education and reproductive health and rights services, and women’s representation in positions of power and decision-making.',
+    objectives: [
+      'Review progress and gaps in implementing the Beijing Platform for Action since 1995.',
+      'Identify emerging challenges for women and actions to advance gender equality.',
+    ],
+    activities: [
+      'Consultations with civil-society organisations on achievements and gaps.',
+      'Discussion of education, reproductive health and rights, and women’s participation in decision-making.',
+    ],
+    beneficiaries: ['Women and girls', 'Civil-society organisations', 'Stakeholders working on gender equality'],
+    featuredImage: picture1.src,
+    gallery: [picture1.src],
+  },
+];
 
 export default function Projects() {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await projectsAPI.getAll();
-        setProjects(res.data.data || []);
-      } catch (error) {
-        console.error('Failed to fetch projects:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, []);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % projects.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + projects.length) % projects.length);
-  };
 
   const openModal = (project) => {
     setSelectedProject(project);
@@ -43,15 +97,19 @@ export default function Projects() {
     setCurrentImageIndex(0);
   };
 
+  const selectedProjectImages = selectedProject?.gallery?.length
+    ? selectedProject.gallery
+    : selectedProject?.featuredImage ? [selectedProject.featuredImage] : [];
+
   const nextImage = () => {
-    if (selectedProject?.gallery?.length) {
-      setCurrentImageIndex((prev) => (prev + 1) % selectedProject.gallery.length);
+    if (selectedProjectImages.length > 1) {
+      setCurrentImageIndex((prev) => (prev + 1) % selectedProjectImages.length);
     }
   };
 
   const prevImage = () => {
-    if (selectedProject?.gallery?.length) {
-      setCurrentImageIndex((prev) => (prev - 1 + selectedProject.gallery.length) % selectedProject.gallery.length);
+    if (selectedProjectImages.length > 1) {
+      setCurrentImageIndex((prev) => (prev - 1 + selectedProjectImages.length) % selectedProjectImages.length);
     }
   };
 
@@ -64,83 +122,72 @@ export default function Projects() {
         height="h-[50vh]"
       />
 
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="mb-8 max-w-4xl">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary-700">Current initiative · Progress to September 2026</p>
+            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">Enhancing Gender-Inclusive Public Procurement and Open Contracting in Malawi</h2>
+            <p className="text-gray-700 leading-relaxed">
+              NABW is implementing this project with support from the Women and Girls Fund (WGF), financed by the Scottish Government and managed by Ecorys UK and FAWEMA. It works to remove barriers so women-led businesses can access, compete for and benefit from government contracts.
+            </p>
+          </div>
+
+          <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {currentProjectResults.map((result) => (
+              <div key={result.label} className="border-l-2 border-primary-600 bg-gray-50 px-5 py-4">
+                <p className="text-3xl font-bold text-primary-800">{result.value}</p>
+                <p className="mt-1 text-sm leading-snug text-gray-700">{result.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {currentProjectPhotos.map((photo) => (
+              <figure key={photo.caption}>
+                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100">
+                  <Image
+                    src={photo.image}
+                    alt={photo.caption}
+                    fill
+                    sizes="(min-width: 640px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <figcaption className="mt-2 text-xs text-gray-600">{photo.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="mt-5 text-xs text-gray-500">Campaign materials comprise eight awareness posters and three advocacy videos. Results reflect reported progress as of September 2026.</p>
+        </div>
+      </section>
+
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-12">
-            <p className="text-primary-700 uppercase tracking-[0.2em] text-xs font-semibold mb-3">Programmes</p>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Official NABW projects and initiatives</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Previous Projects</h2>
           </div>
 
-          {loading ? (
-            <div className="space-y-6">
-              {[...Array(4)].map((_, index) => (
-                <div key={index} className="h-36 bg-gray-200 rounded-xl animate-pulse" />
-              ))}
-            </div>
-          ) : projects.length > 0 ? (
-            <div className="relative">
-              {/* Carousel Container */}
-              <div className="overflow-hidden">
-                <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-                  {projects.map((project, index) => (
-                    <div key={index} className="min-w-full px-4">
-                      <div
-                        onClick={() => openModal(project)}
-                        className="bg-white rounded-xl shadow-lg p-8 cursor-pointer hover:shadow-2xl transition-shadow duration-300"
-                      >
-                        {project.featuredImage && (
-                          <div className="mb-6 rounded-lg overflow-hidden h-48 bg-gray-100">
-                            <img
-                              src={project.featuredImage}
-                              alt={project.title}
-                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        )}
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">{project.title}</h3>
-                        <p className="text-gray-700 leading-relaxed mb-4">{project.shortDescription || project.fullDescription}</p>
-                        <div className="text-primary-600 font-semibold hover:text-primary-700 text-sm">
-                          Click to view details →
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all z-10"
-                aria-label="Previous project"
-              >
-                <FiChevronLeft className="w-6 h-6 text-gray-900" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all z-10"
-                aria-label="Next project"
-              >
-                <FiChevronRight className="w-6 h-6 text-gray-900" />
-              </button>
-
-              {/* Dots Indicator */}
-              <div className="flex justify-center gap-2 mt-8">
-                {projects.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all ${
-                      index === currentSlide ? 'bg-primary-600 w-8' : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                    aria-label={`Go to project ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="text-center text-gray-600 py-10">Projects are currently being updated.</div>
-          )}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {previousProjects.map((project) => (
+              <article key={project.title} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
+                <button
+                  type="button"
+                  onClick={() => openModal(project)}
+                  className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-700"
+                  aria-label={`View details for ${project.title}`}
+                >
+                  <div className="relative h-48 overflow-hidden bg-gray-100">
+                    <Image src={project.featuredImage} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-300 hover:scale-105" />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900">{project.title}</h3>
+                    <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-gray-700">{project.shortDescription}</p>
+                    <span className="mt-5 inline-block text-sm font-semibold text-primary-700">View project details</span>
+                  </div>
+                </button>
+              </article>
+            ))}
+          </div>
 
           {/* Project Detail Modal */}
           {selectedProject && (
@@ -164,15 +211,15 @@ export default function Projects() {
                 {/* Modal Content */}
                 <div className="p-6 md:p-8">
                   {/* Gallery */}
-                  {selectedProject.gallery && selectedProject.gallery.length > 0 && (
+                  {selectedProjectImages.length > 0 && (
                     <div className="mb-8">
                       <div className="relative bg-gray-100 rounded-xl overflow-hidden h-96 mb-4">
                         <img
-                          src={selectedProject.gallery[currentImageIndex]}
+                          src={selectedProjectImages[currentImageIndex]}
                           alt={`${selectedProject.title} - Image ${currentImageIndex + 1}`}
                           className="w-full h-full object-cover"
                         />
-                        {selectedProject.gallery.length > 1 && (
+                        {selectedProjectImages.length > 1 && (
                           <>
                             <button
                               onClick={prevImage}
@@ -193,9 +240,9 @@ export default function Projects() {
                       </div>
 
                       {/* Image Thumbnails */}
-                      {selectedProject.gallery.length > 1 && (
+                      {selectedProjectImages.length > 1 && (
                         <div className="flex gap-2 overflow-x-auto pb-2">
-                          {selectedProject.gallery.map((img, idx) => (
+                          {selectedProjectImages.map((img, idx) => (
                             <button
                               key={idx}
                               onClick={() => setCurrentImageIndex(idx)}
@@ -248,6 +295,34 @@ export default function Projects() {
                       </div>
                     )}
 
+                    {selectedProject.beneficiaries && selectedProject.beneficiaries.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-3">Beneficiaries</h3>
+                        <ul className="space-y-2">
+                          {selectedProject.beneficiaries.map((beneficiary, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-gray-700">
+                              <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-primary-600" />
+                              <span>{beneficiary}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {selectedProject.achievedResults && selectedProject.achievedResults.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-3">Results</h3>
+                        <ul className="space-y-2">
+                          {selectedProject.achievedResults.map((result, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-gray-700">
+                              <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-primary-600" />
+                              <span>{result}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                     {selectedProject.location && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
                         <div>
@@ -258,6 +333,15 @@ export default function Projects() {
                           <div>
                             <p className="text-sm text-gray-600 mb-1">Status</p>
                             <p className="font-semibold text-gray-900 capitalize">{selectedProject.status}</p>
+                          </div>
+                        )}
+                        {selectedProject.startDate && (
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">Project period</p>
+                            <p className="font-semibold text-gray-900">
+                              {new Date(selectedProject.startDate).getFullYear()}
+                              {selectedProject.endDate ? `–${new Date(selectedProject.endDate).getFullYear()}` : '–Present'}
+                            </p>
                           </div>
                         )}
                       </div>

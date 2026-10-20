@@ -93,14 +93,6 @@ export const partnersAPI = {
   delete: (id) => api.delete(`/partners/${id}`),
 };
 
-export const impactStatsAPI = {
-  getAll: () => api.get('/impact-stats'),
-  getById: (id) => api.get(`/impact-stats/${id}`),
-  create: (data) => api.post('/impact-stats', data),
-  update: (id, data) => api.put(`/impact-stats/${id}`, data),
-  delete: (id) => api.delete(`/impact-stats/${id}`),
-};
-
 export const newsAPI = {
   getAll: () => api.get('/news'),
   getFeatured: () => api.get('/news/featured'),

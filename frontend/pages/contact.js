@@ -1,29 +1,8 @@
-import { useState, useEffect } from 'react';
 import Hero from '../components/ui/Hero';
 import ContactForm from '../components/forms/ContactForm';
-import FAQItem from '../components/ui/FAQItem';
-import { faqsAPI } from '../lib/api';
 import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi';
 
 export default function Contact() {
-  const [faqs, setFaqs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchFAQs = async () => {
-      try {
-        const res = await faqsAPI.getAll();
-        setFaqs(res.data.data);
-      } catch (err) {
-        console.error('Failed to fetch FAQs:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFAQs();
-  }, []);
-
   return (
     <>
       <Hero
@@ -61,7 +40,7 @@ export default function Contact() {
                     <div>
                       <h3 className="font-bold text-gray-900 mb-1">Telephone</h3>
                       <p className="text-gray-600 text-sm">+265 995 752 813</p>
-                      <p className="text-gray-600 text-sm">+265 888285280</p>
+                      <p className="text-gray-600 text-sm">+265 888 285 280</p>
                     </div>
                   </div>
 
@@ -94,28 +73,6 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="mt-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Frequently Asked Questions</h2>
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-40 bg-gray-200 rounded-xl animate-pulse"></div>
-                ))}
-              </div>
-            ) : faqs.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {faqs.map((faq) => (
-                  <div key={faq._id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                    <FAQItem faq={faq} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-600">FAQs are currently being updated by the organisation.</p>
-              </div>
-            )}
-          </div>
         </div>
       </section>
     </>
