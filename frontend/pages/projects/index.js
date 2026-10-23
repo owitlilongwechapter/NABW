@@ -2,25 +2,38 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Hero from '../../components/ui/Hero';
 import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
-import picture1 from '../../styles/pictures/Picture1.png';
-import picture2 from '../../styles/pictures/Picture2.png';
-import picture6 from '../../styles/pictures/Picture6.png';
+import galleryManifest from '../../galleryManifest.json';
 
-const currentProjectPhotos = [
-  { image: picture1, caption: 'Women-led businesses showcasing their products' },
-  { image: picture2, caption: 'NABW enterprise exhibition' },
-  { image: picture6, caption: 'Women entrepreneurs in a learning session' },
-];
-
-const currentProjectResults = [
-  { value: '7', label: 'Policy recommendations submitted' },
-  { value: '22', label: 'Policymakers engaged' },
-  { value: '56', label: 'Women entrepreneurs trained' },
-  { value: '4', label: 'Advocacy engagements' },
-  { value: '1', label: 'Policy brief developed' },
-  { value: '11', label: 'Campaign materials created' },
-  { value: '20', label: 'Women in mentorship' },
-  { value: '1', label: 'Stakeholder roundtable' },
+const currentInitiatives = [
+  {
+    title: 'FAWE',
+    shortDescription: 'Enhancing gender inclusive public procurement and open contracting in Malawi.',
+    fullDescription: 'NABW is implementing the project with support from the Women and Girls Fund, financed by the Scottish Government and managed by Ecorys UK and FAWEMA. It works to remove barriers and promote gender-responsive public procurement so women-led businesses can access, compete for and benefit from government contracts.',
+    objectives: [
+      'Influence inclusive procurement policies and institutional practices.',
+      'Build women entrepreneurs’ procurement knowledge, readiness and skills.',
+      'Promote transparency, accountability and open contracting.',
+    ],
+    achievedResults: [
+      '7 policy recommendations developed and submitted.',
+      '22 policymakers engaged in targeted policy discussions.',
+      '56 women entrepreneurs trained.',
+      '4 advocacy engagements conducted.',
+      '1 policy brief developed and disseminated.',
+      '11 campaign materials developed.',
+      '20 women participating in a procurement mentorship programme.',
+      '1 stakeholder roundtable convened.',
+    ],
+    featuredImage: galleryManifest.projects.fawe[0],
+    gallery: galleryManifest.projects.fawe,
+  },
+  {
+    title: 'GDM',
+    shortDescription: 'Explore photographs from NABW’s GDM project.',
+    fullDescription: 'A selection of photographs from the GDM project is available in the gallery. More project information can be added when it is available.',
+    featuredImage: galleryManifest.projects.gdm[0],
+    gallery: galleryManifest.projects.gdm,
+  },
 ];
 
 const previousProjects = [
@@ -40,8 +53,8 @@ const previousProjects = [
     ],
     beneficiaries: ['Women-owned SMEs', 'Women entrepreneurs', 'Civil-society and policy stakeholders'],
     achievedResults: ['The 2020 campaign contributed to the development of a Financial Inclusion Index for monitoring financial institutions.'],
-    featuredImage: picture2.src,
-    gallery: [picture2.src],
+    featuredImage: galleryManifest.projects.sheacts4feminomics[0],
+    gallery: galleryManifest.projects.sheacts4feminomics,
   },
   {
     title: 'Women’s Empowerment Project',
@@ -62,8 +75,8 @@ const previousProjects = [
       '64 women entrepreneurs were trained against a target of 60; 70% developed or improved a product.',
       '28 of 30 targeted mentors (93%) were trained, with each assigned at least three mentees.',
     ],
-    featuredImage: picture6.src,
-    gallery: [picture6.src],
+    featuredImage: galleryManifest.projects.awe[0],
+    gallery: [...galleryManifest.projects.awe, ...galleryManifest.projects.fawe, ...galleryManifest.projects.we4d],
   },
   {
     title: 'Transparency and Accountability Project',
@@ -78,14 +91,58 @@ const previousProjects = [
       'Discussion of education, reproductive health and rights, and women’s participation in decision-making.',
     ],
     beneficiaries: ['Women and girls', 'Civil-society organisations', 'Stakeholders working on gender equality'],
-    featuredImage: picture1.src,
-    gallery: [picture1.src],
+    featuredImage: galleryManifest.impact[0],
+    gallery: galleryManifest.impact,
+  },
+  {
+    title: 'Building Back Better',
+    shortDescription: 'Supporting women-owned businesses to recover and build resilience following climate-related events.',
+    fullDescription: 'NABW supports women-owned businesses to recover and strengthen resilience after climate-related events and other external shocks.',
+    beneficiaries: ['Women-owned businesses', 'Women entrepreneurs'],
+    featuredImage: galleryManifest.projects['building-back-better'][0],
+    gallery: galleryManifest.projects['building-back-better'],
+  },
+  {
+    title: 'Green and Inclusive Energy',
+    shortDescription: 'Advancing women’s participation in greener, more inclusive energy systems and supply chains.',
+    beneficiaries: ['Women entrepreneurs', 'Women-led businesses'],
+    featuredImage: galleryManifest.projects['green-inclusive-energy'][0],
+    gallery: galleryManifest.projects['green-inclusive-energy'],
+  },
+  {
+    title: 'AWE',
+    shortDescription: 'A catalogue of activities and photographs from the AWE project.',
+    featuredImage: galleryManifest.projects.awe[0],
+    gallery: galleryManifest.projects.awe,
+  },
+  {
+    title: 'FAWE',
+    shortDescription: 'A catalogue of activities and photographs from the FAWE project.',
+    featuredImage: galleryManifest.projects.fawe[0],
+    gallery: galleryManifest.projects.fawe,
+  },
+  {
+    title: 'WE4D',
+    shortDescription: 'A catalogue of activities and photographs from the WE4D project.',
+    featuredImage: galleryManifest.projects.we4d[0],
+    gallery: galleryManifest.projects.we4d,
+  },
+  {
+    title: 'GDM',
+    shortDescription: 'A selection of photographs from NABW’s GDM project.',
+    featuredImage: galleryManifest.projects.gdm[0],
+    gallery: galleryManifest.projects.gdm,
   },
 ];
+
+const projectListings = previousProjects
+  .filter(({ title }) => !/women.*empowerment project|transparency and accountability project|^FAWE$|^GDM$/i.test(title))
+  .map((project, index) => (index === 0 ? { ...project, title: 'SheActs4Feminomics' } : project));
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showAllProjects, setShowAllProjects] = useState(false);
 
   const openModal = (project) => {
     setSelectedProject(project);
@@ -124,40 +181,32 @@ export default function Projects() {
 
       <section className="section-padding bg-white">
         <div className="container-custom">
-          <div className="mb-8 max-w-4xl">
+          <div className="mb-8 text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary-700">Current initiative · Progress to September 2026</p>
-            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">Enhancing Gender-Inclusive Public Procurement and Open Contracting in Malawi</h2>
-            <p className="text-gray-700 leading-relaxed">
-              NABW is implementing this project with support from the Women and Girls Fund (WGF), financed by the Scottish Government and managed by Ecorys UK and FAWEMA. It works to remove barriers so women-led businesses can access, compete for and benefit from government contracts.
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">Current Projects</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-gray-700">Select a project to view its information and photo gallery.</p>
           </div>
 
-          <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {currentProjectResults.map((result) => (
-              <div key={result.label} className="border-l-2 border-primary-600 bg-gray-50 px-5 py-4">
-                <p className="text-3xl font-bold text-primary-800">{result.value}</p>
-                <p className="mt-1 text-sm leading-snug text-gray-700">{result.label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {currentProjectPhotos.map((photo) => (
-              <figure key={photo.caption}>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100">
-                  <Image
-                    src={photo.image}
-                    alt={photo.caption}
-                    fill
-                    sizes="(min-width: 640px) 33vw, 100vw"
-                    className="object-cover"
-                  />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {currentInitiatives.map((project) => (
+              <button
+                key={project.title}
+                type="button"
+                onClick={() => openModal(project)}
+                className="group overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700"
+                aria-label={`View ${project.title} project information`}
+              >
+                <div className="relative aspect-[16/9] bg-gray-100">
+                  <Image src={project.featuredImage} alt={`${project.title} project`} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-300 group-hover:scale-105" />
                 </div>
-                <figcaption className="mt-2 text-xs text-gray-600">{photo.caption}</figcaption>
-              </figure>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900">{project.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-700">{project.shortDescription}</p>
+                  <span className="mt-4 inline-block text-sm font-semibold text-primary-700">View project information <span aria-hidden="true">→</span></span>
+                </div>
+              </button>
             ))}
           </div>
-          <p className="mt-5 text-xs text-gray-500">Campaign materials comprise eight awareness posters and three advocacy videos. Results reflect reported progress as of September 2026.</p>
         </div>
       </section>
 
@@ -168,7 +217,7 @@ export default function Projects() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {previousProjects.map((project) => (
+            {(showAllProjects ? projectListings : projectListings.slice(0, 3)).map((project) => (
               <article key={project.title} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
                 <button
                   type="button"
@@ -188,6 +237,18 @@ export default function Projects() {
               </article>
             ))}
           </div>
+          {projectListings.length > 3 && (
+            <div className="mt-8 text-center">
+              <button
+                type="button"
+                onClick={() => setShowAllProjects((showAll) => !showAll)}
+                className="btn-primary"
+                aria-expanded={showAllProjects}
+              >
+                {showAllProjects ? 'Show fewer projects' : 'See more projects'}
+              </button>
+            </div>
+          )}
 
           {/* Project Detail Modal */}
           {selectedProject && (

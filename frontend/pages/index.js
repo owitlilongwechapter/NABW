@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiChevronDown, FiChevronLeft, FiChevronRight, FiGlobe, FiHeart, FiBriefcase } from 'react-icons/fi';
+import { FiChevronDown, FiGlobe, FiHeart, FiBriefcase } from 'react-icons/fi';
 import Image from 'next/image';
 import Link from 'next/link';
 import Hero from '../components/ui/Hero';
@@ -14,10 +14,11 @@ import picture7 from '../styles/pictures/Picture7.png';
 
 const homepagePhotos = [picture1, picture2, picture3, picture4, picture5, picture6, picture7].map((image) => image.src);
 const teamMembers = [
-  { name: 'Ms Barbara Banda', role: 'President' },
-  { name: 'Mr Jack Banda', role: 'Project Coordinator' },
+  { name: 'Ms Barbara Banda', role: 'Executive Director' },
+  { name: 'Mr Jack Banda', role: 'Project Manager' },
   { name: 'Maryrose Ikumi', role: 'Monitoring and Evaluation Expert' },
-  { name: 'Packston Chalema', role: 'Accountant' },
+  { name: 'Packston Chalema', role: 'Finance Officer' },
+  { name: 'Eluby Chisi', role: 'Administrative Officer' },
 ];
 const projectSnapshots = [
   {
@@ -56,8 +57,6 @@ const partnerCategories = [
 export default function Home() {
   const [about, setAbout] = useState(null);
   const [partners, setPartners] = useState([]);
-  const [activeTeamIndex, setActiveTeamIndex] = useState(0);
-  const [isTeamPaused, setIsTeamPaused] = useState(false);
   const [openPartnerCategory, setOpenPartnerCategory] = useState(null);
 
   useEffect(() => {
@@ -77,20 +76,6 @@ export default function Home() {
 
     fetchHomeData();
   }, []);
-
-  useEffect(() => {
-    if (isTeamPaused) return undefined;
-
-    const interval = setInterval(() => {
-      setActiveTeamIndex((currentIndex) => (currentIndex + 1) % teamMembers.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [isTeamPaused]);
-
-  const showTeamMember = (index) => {
-    setActiveTeamIndex((index + teamMembers.length) % teamMembers.length);
-  };
 
   const groupedPartners = partnerCategories.map((category, categoryIndex) => ({
     ...category,
@@ -216,71 +201,16 @@ export default function Home() {
             <p className="text-primary-700 font-semibold uppercase tracking-[0.2em] text-xs mb-3">People</p>
             <h2 className="text-3xl font-bold text-gray-900">Our Team</h2>
           </div>
-          <div
-            className="mx-auto max-w-xl"
-            role="region"
-            aria-roledescription="carousel"
-            aria-label="NABW team members"
-            onMouseEnter={() => setIsTeamPaused(true)}
-            onMouseLeave={() => setIsTeamPaused(false)}
-            onFocus={() => setIsTeamPaused(true)}
-            onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) setIsTeamPaused(false);
-            }}
-          >
-            <div className="overflow-hidden rounded-xl">
-              <div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${activeTeamIndex * 100}%)` }}
-              >
-                {teamMembers.map((person, index) => (
-                  <article
-                    key={person.name}
-                    className="min-w-full rounded-xl bg-white p-8 text-center shadow-lg"
-                    role="group"
-                    aria-roledescription="slide"
-                    aria-label={`${index + 1} of ${teamMembers.length}`}
-                    aria-hidden={index !== activeTeamIndex}
-                  >
-                    <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary-100 text-xl font-bold text-primary-700">
-                      {person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900">{person.name}</h3>
-                    <p className="mt-2 text-sm font-semibold text-primary-700">{person.role}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
-            <div className="mt-5 flex items-center justify-center gap-5">
-              <button
-                type="button"
-                onClick={() => showTeamMember(activeTeamIndex - 1)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-700 transition hover:border-primary-600 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700"
-                aria-label="Previous team member"
-              >
-                <FiChevronLeft aria-hidden="true" className="h-5 w-5" />
-              </button>
-              <div className="flex items-center gap-2" role="group" aria-label="Choose team member">
-                {teamMembers.map((person, index) => (
-                  <button
-                    key={person.name}
-                    type="button"
-                    onClick={() => showTeamMember(index)}
-                    className={`h-2.5 w-2.5 rounded-full transition ${index === activeTeamIndex ? 'bg-primary-700' : 'bg-gray-300 hover:bg-gray-500'}`}
-                    aria-label={`Show ${person.name}`}
-                    aria-current={index === activeTeamIndex ? 'true' : undefined}
-                  />
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() => showTeamMember(activeTeamIndex + 1)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-700 transition hover:border-primary-600 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700"
-                aria-label="Next team member"
-              >
-                <FiChevronRight aria-hidden="true" className="h-5 w-5" />
-              </button>
-            </div>
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {teamMembers.map((person) => (
+              <article key={person.name} className="rounded-xl bg-white p-8 text-center shadow-lg">
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary-100 text-xl font-bold text-primary-700">
+                  {person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">{person.name}</h3>
+                <p className="mt-2 text-sm font-semibold text-primary-700">{person.role}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

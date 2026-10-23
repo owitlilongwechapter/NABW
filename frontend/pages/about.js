@@ -214,7 +214,7 @@ export default function About() {
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Governance</h2>
             <div className="bg-white rounded-xl shadow-lg p-8">
-              <p className="text-gray-700 leading-relaxed mb-6">{about?.governance || 'NABW has a membership-led structure and a Board of Directors that guides the organisation.'}</p>
+              <p className="text-gray-700 leading-relaxed mb-6">{about?.governance?.replace(/professional and volunteer staff\.?$/i, 'professionals and volunteer staff.') || 'NABW has a membership-led structure and a Board of Directors that guides the organisation.'}</p>
             </div>
           </div>
 

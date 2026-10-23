@@ -1,11 +1,12 @@
 ﻿import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Hero from '../components/ui/Hero';
-import { partnersAPI } from '../lib/api';
+import Hero from '../../components/ui/Hero';
+import { partnersAPI } from '../../lib/api';
 import { FiChevronDown } from 'react-icons/fi';
-import picture1 from '../styles/pictures/Picture1.png';
-import picture2 from '../styles/pictures/Picture2.png';
-import picture6 from '../styles/pictures/Picture6.png';
+import galleryManifest from '../../galleryManifest.json';
+import picture1 from '../../styles/pictures/Picture1.png';
+import picture2 from '../../styles/pictures/Picture2.png';
+import picture6 from '../../styles/pictures/Picture6.png';
 
 const partnerCategories = [
   {
@@ -126,6 +127,23 @@ export default function Impact() {
                   </article>
                 );
               })}
+            </div>
+          </div>
+          <div className="mb-16">
+            <div className="mb-8 text-center">
+              <p className="text-primary-700 uppercase tracking-[0.2em] text-xs font-semibold mb-3">In action</p>
+              <h2 className="text-3xl font-bold text-gray-900">Advocacy &amp; Campaigns</h2>
+              <p className="mx-auto mt-3 max-w-2xl leading-relaxed text-gray-600">A selection of advocacy and campaign work carried out by NABW.</p>
+            </div>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {galleryManifest.impact.map((image, index) => (
+                <figure key={image} className="overflow-hidden rounded-xl bg-white shadow-sm">
+                  <div className="relative aspect-[4/3] bg-gray-100">
+                    <Image src={image} alt={`NABW advocacy and campaign activity ${index + 1}`} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-300 hover:scale-105" />
+                  </div>
+                  <figcaption className="p-3 text-sm font-medium text-gray-700">Advocacy and campaigns</figcaption>
+                </figure>
+              ))}
             </div>
           </div>
           <div className="mb-16">

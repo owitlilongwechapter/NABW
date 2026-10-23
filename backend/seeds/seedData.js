@@ -75,7 +75,7 @@ const seedData = async () => {
       {
         organizationName: 'National Association of Business Women (NABW)',
         mission: 'To empower and uplift the lives of women economically and socially through entrepreneurship development, skills training, market access, information dissemination, access to finance and advocacy among urban and rural women.',
-        vision: 'To have liberated, socially empowered and economically active women of Malawi who contribute significantly to the political and economic development of Malawi.',
+        vision: 'A Malawi where all women believe in their potential, work together and thrive as respected economically active business leaders contributing to inclusive national development. ',
         objectives: [
           'Promote women’s entrepreneurship and sustainable business growth',
           'Build women’s leadership and decision-making capacity',
@@ -86,35 +86,33 @@ const seedData = async () => {
         history: 'NABW is a women-founded and women-led non-profit and non-governmental organisation dedicated to empowering women in business and leadership roles. Founded in 1990 as an NGO under the Trusteeship Act of 1962 of the Laws of Malawi, NABW works across three key thematic areas: Economic Empowerment, Social Advocacy, and Climate Action & Renewable Energy.',
         coreValues: [
           {
-            title: 'Legitimacy',
-            description: 'We always strive to be the legitimate voice for all women, not only our members, doing various businesses in Malawi.',
-            icon: 'legitimacy',
+            title: 'Inclusivity',
+            description: 'NABW promotes equal opportunities for all women entrepreneurs, regardless of their background, age, disability or economic status, ensuring that every woman has a voice and the opportunity to participate and thrive.',
+            icon: 'inclusivity',
           },
           {
-            title: 'Resourceful',
-            description: 'We always strive to be resourceful in order to generate all the needed expertise to help women in their business activities and help entities in Malawi create environments where women businesses can prosper.',
-            icon: 'resourceful',
+            title: 'Accountability',
+            description: 'NABW upholds transparency, and responsibility in all its operations, ensuring that resources are used effectively and commitments are fullfilled to its members, partners and stakeholders.',
+            icon: 'accountability',
           },
           {
-            title: 'Membership-led',
-            description: 'We are a membership-led organization, and therefore, our members always inform what we do. Our members inform our direction and the strategies we take.',
-            icon: 'membership-led',
+            title: 'Collaboration',
+            description: 'NABW values partnerships and collective action, working with members, government, the private sector and development partners to advance womens economic empowerment and entrepreneurship.',
+            icon: 'Collaboration',
           },
           {
-            title: 'Honesty',
-            description: 'We always strive to be honest in all our undertakings within ourselves as a membership-led organization, as well as with all partners and duty bearers we work with.',
-            icon: 'honesty',
+            title: 'Sustainability',
+            description: 'NABW promotes long-term economic empowernment by strengthening womens businesses, building their capacities and supporting access to resources and opportunities that enable lasting growth.',
+            icon: 'sustainability',
+          },
+            {
+            title: 'Belief in womens potential',
+            description: 'NABW believes that every woman has the portential to succeed as an entrepreneur and leader. We are committed to empowering women with the skills, confidence, resources and opportunities they need to realise their full potential.',
+            icon: 'belief-in-womens-potential',
           },
         ],
-        leadership: [
-          {
-            name: 'Barbara Banda',
-            position: 'Executive Director',
-            bio: 'Barbara Banda is NABW’s Executive Director and has over 30 years of experience in development management in the sub-Saharan Africa region. She has served in various leadership positions, including as Chairperson of the NGO Gender Coordination Network and as a former board member of the National Economic Empowerment Fund. She holds an MSc in Development Management.',
-            image: 'https://images.unsplash.com/photo-1573496359048-32893a1a425f?w=400&h=400&fit=crop&auto=format',
-          },
-        ],
-        governance: 'NABW has a Board of Directors consisting of seven credible, professionally respected, trusted and experienced business women who are elected at the Annual General Assembly to govern the organisation. The Board recruits the Executive Director to manage daily operations, while the organisation is supported by professional and volunteer staff.',
+      
+        governance: 'NABW has a Board of Directors consisting of seven credible, professionally respected, trusted and experienced business women who are elected at the Annual General Assembly to govern the organisation. The Board recruits the Executive Director to manage daily operations, while the organisation is supported by professionals and volunteer staff.',
         strategicPriorities: [
           'Economic Empowerment',
           'Social Advocacy',
@@ -313,45 +311,6 @@ const seedData = async () => {
       },
     ]);
 
-    // --- Testimonials ---
-    const testimonials = await Testimonial.create([
-      {
-        name: 'Chisomo Mwale',
-        title: 'Founder, Tech Solutions Ltd',
-        organization: 'Tech Solutions Ltd',
-        content: 'NABW\'s Women in Tech Initiative completely transformed my career. Before joining the program, I was working in a clerical job with no technical skills. After the 12-week bootcamp and mentorship program, I was able to secure a position as a junior developer at a leading tech company. My salary tripled, and I now have the confidence to pursue my dream of starting my own tech company.',
-        image: 'https://images.unsplash.com/photo-1573496359048-32893a1a425f?w=400&h=400&fit=crop&auto=format',
-        rating: 5,
-        isPublished: true,
-      },
-      {
-        name: 'Esther Banda',
-        title: 'Owner, Banda Farms',
-        organization: 'Banda Farms',
-        content: 'The Rural Women Agricultural Empowerment project taught me modern farming techniques that increased my maize yield by 50%. Through the cooperative they helped establish, I now have direct access to markets and can sell my produce at better prices. My income has doubled, and I can now send my children to school and invest in my farm.',
-        image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&auto=format',
-        rating: 5,
-        isPublished: true,
-      },
-      {
-        name: 'Linda Phiri',
-        title: 'CEO, Phiri Enterprises',
-        organization: 'Phiri Enterprises',
-        content: 'The Financial Literacy for Women Entrepreneurs program gave me the tools and knowledge to manage my business finances properly. I learned how to create a budget, track expenses, and access funding. Within a year of completing the program, I was able to expand my business from a small shop to a chain of three stores. I highly recommend NABW to any woman entrepreneur.',
-        image: 'https://images.unsplash.com/photo-1580894895372-3c1f7c89c002?w=400&h=400&fit=crop&auto=format',
-        rating: 5,
-        isPublished: true,
-      },
-      {
-        name: 'Grace Moyo',
-        title: 'Program Manager',
-        organization: 'Community Development NGO',
-        content: 'As a participant in the Women\'s Leadership Development Program, I gained the confidence and skills to take on leadership roles in my community. The coaching sessions and peer learning circles were invaluable. I was recently promoted to Program Manager at my organization, and I credit much of my success to the training I received from NABW.',
-        image: 'https://images.unsplash.com/photo-1551836022-d5ca385ac2e6?w=400&h=400&fit=crop&auto=format',
-        rating: 4,
-        isPublished: true,
-      },
-    ]);
 
     // --- Impact Stats ---
     const impactStats = await ImpactStat.deleteMany({});

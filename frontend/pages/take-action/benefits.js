@@ -36,7 +36,7 @@ const benefits = [
 ];
 
 const membershipCategories = [
-  { value: 'individual', label: 'Individual Membership', price: 'MWK 50,000/Year' },
+  { value: 'individual', label: 'Individual Membership', price: 'MWK 15,000/Year' },
 ];
 
 export default function Benefits() {
