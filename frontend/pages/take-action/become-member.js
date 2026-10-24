@@ -25,7 +25,7 @@ export default function BecomeMember() {
 
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <p className="text-gray-600 mb-6">
-                The membership application is completed securely through our online registration form.
+                The membership application is completed through our online registration form.
               </p>
               <a href={membershipRegistrationUrl} className="btn-primary inline-flex">
                 Open Membership Registration Form
